@@ -1,0 +1,6 @@
+[submodule "app"]
+	path = app
+	url = https://github.com/Berachaiah/railpulse.git
+[submodule "notification-agent"]
+	path = notification-agent
+	url = https://github.com/Olahzie/Railpulse-Notification-Agent.git
