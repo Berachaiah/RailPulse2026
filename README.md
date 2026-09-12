@@ -64,6 +64,10 @@ The `app` folder (`Berachaiah/railpulse`) owns auth, session management, applica
 
 The `notification-agent` folder (`Olahzie/Railpulse-Notification-Agent`) owns ingestion, the medallion pipeline, reliability and enrichment jobs, and the LangGraph agent that decides who gets notified and what the message says.
 
+## 🖼️ Architecture Diagram
+
+![RailPulse Architecture](static/images/railpulse-architecture.png)
+
 ## 📡 Real Time Data Pipeline
 
 Live railway and weather data is streamed through a dedicated Kafka setup on Confluent Cloud before it ever reaches the Lakehouse.
