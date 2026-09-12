@@ -11,14 +11,14 @@
 
 RailPulse is a railway intelligence platform that helps UK rail passengers understand their journeys, railway conditions, disruptions, and relevant travel information. It combines a passenger facing web application with a Databricks Lakehouse data platform and an AI notification system.
 
-This repo brings together the two parts of RailPulse as submodules and documents how they fit together and what each of us built.
+This repo brings together the two parts of RailPulse as submodules and documents how they fit together.
 
 🌐 Live Application: http://railpulse-mu.vercel.app/
 
-| Component | Repo | Owner |
-|---|---|---|
-| Passenger app (`app/`) | [Berachaiah/railpulse](https://github.com/Berachaiah/railpulse) | Berachaiah |
-| Notification agent (`notification-agent/`) | [Olahzie/Railpulse-Notification-Agent](https://github.com/Olahzie/Railpulse-Notification-Agent) | Mr Ola (Olahzie) |
+| Component | Repo |
+|---|---|
+| Passenger app (`app/`) | [Berachaiah/railpulse](https://github.com/Berachaiah/railpulse) |
+| Notification agent (`notification-agent/`) | [Olahzie/Railpulse-Notification-Agent](https://github.com/Olahzie/Railpulse-Notification-Agent) |
 
 ---
 
@@ -84,17 +84,22 @@ Live railway and weather data is streamed through a dedicated Kafka setup on Con
 6. **Delivery** — the message goes out via SMTP from appotg.com; dispatch and outbox state is recorded, and the passenger app receives it through a webhook.
 7. **Passenger app** — serves the passenger's account, preferences, and journey/notification history through the FastAPI and Supabase backed web UI.
 
-## 🛠️ What Was Built
+## 📸 Screenshots
 
-**Berachaiah — passenger application:**
+**A disruption notification delivered to a passenger's inbox:**
 
-- FastAPI app backed by Supabase/PostgreSQL, migrated off an early SQLite/mock-data setup to real `User`, `UserPreference`, and `Notification` models.
-- Custom auth, later moved to Firebase Authentication with Google sign-in (Google Cloud OAuth was blocked by a billing prepayment requirement, so Firebase's free Spark plan was used instead) and JWT-based sessions.
-- Deployed to Vercel, with a `/webhooks/notifications` endpoint (secret-header authenticated) to receive notifications from the Databricks/agent side.
-- App features: weather-based delay predictions and route-change alerts, surfaced through the dashboard, preferences, and notifications pages.
+![Delay notification email](static/images/screenshot-notification-email.png)
 
-**Mr Ola (Olahzie) — data engineering and notification agent:**
+**A Bronze → Silver → Gold pipeline run in Databricks:**
 
+![Medallion pipeline run](static/images/screenshot-pipeline-run.png)
+
+## 🛠️ Features
+
+- FastAPI app backed by Supabase/PostgreSQL, with `User`, `UserPreference`, and `Notification` models.
+- Firebase Authentication with Google sign-in and JWT-based sessions.
+- Deployed to Vercel, with a `/webhooks/notifications` endpoint (secret-header authenticated) that receives notifications from the Databricks/agent side.
+- Weather-based delay predictions and route-change alerts, surfaced through the dashboard, preferences, and notifications pages.
 - Databricks Lakehouse with Bronze, Silver, and Gold pipelines processing railway and weather data.
 - Route and station reliability analytics, weather/train enrichment, and `ai_alert` disruption context generation.
 - LangGraph notification agent deployed through MLflow and Databricks Model Serving, matching alerts to rider preferences and alert history and generating notification content.
@@ -125,12 +130,6 @@ Live railway and weather data is streamed through a dedicated Kafka setup on Con
 - **Model Serving permissions** — the notification agent's serving endpoint has limited direct access to some notification tables; dispatch currently works around this via MLflow trace data.
 - **Unity Catalog function grants** — recreating UC functions can drop existing `EXECUTE` grants; setup reapplies them.
 - **Secrets** — any remaining hardcoded credentials in setup scripts should move to Databricks secret scopes or another secret manager before production use.
-
-## 👥 Contributors
-
-**Berachaiah** — Full stack and application engineering: the passenger facing app, FastAPI backend, auth, session management, Jinja2/HTML/CSS/JS frontend, Supabase/PostgreSQL integration, Vercel deployment. See [Berachaiah/railpulse](https://github.com/Berachaiah/railpulse).
-
-**Mr Ola (Olahzie)** — Data engineering, AI, and notifications: Databricks Lakehouse (Bronze, Silver, Gold), reliability analytics, weather/train enrichment, the LangGraph notification agent, MLflow/Model Serving, rider preference sync, notification dispatch. See [Olahzie/Railpulse-Notification-Agent](https://github.com/Olahzie/Railpulse-Notification-Agent).
 
 ---
 
